@@ -140,7 +140,7 @@ Fetch: The Program Counter (PC) outputs the address to the Instruction Memory (E
 
 Decode: The 4-bit opcode from the IR drives the address lines of a Control EEPROM. A second binary counter is decoded to be used on the address lines for the control word, useful for instructions that take multiple steps.
 
-Execute: The Control Unit asserts a Control Word—a series of active-low/high signals that open tri-state buffers and trigger register enable pins. This orchestrates the flow of data across the 4-bit system bus in synchronization with the clock.
+Execute: The Control Unit asserts a Control Word which is a series of active-low/high signals that open tri-state buffers and trigger register enable pins. This orchestrates the flow of data across the 4-bit system bus in synchronization with the clock.
 
 
 ### Flags Register & Conditional Logic
