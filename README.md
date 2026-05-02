@@ -1,17 +1,20 @@
 # 4-Bit-CPU
-4 Bit CPU Design inspired by Ben Eater's 8 Bit Computer.
-This project implements a 4-bit CPU constructed entirely from discrete logic ICs on a breadboard. The CPU is designed to demonstrate core computer architecture concepts such as instruction execution, datapath design, register-based computation, and control via opcodes. The processor uses a 4-bit datapath and is built around TTL/CMOS logic components. The design follows a Harvard architecture, separating instruction memory from the data path. Instructions are 8 bits wide, split into a 4-bit opcode and a 4-bit operand. While minimal in scale, this CPU is designed to implement the essential fetch–decode–execute cycle used in modern processors.
+Inspired by Ben Eater’s 8-bit computer architecture, this project features two distinct implementations of a 4-bit CPU: a physical prototype constructed with discrete logic and a digital twin designed in Verilog.
+
+These implementations demonstrate the transition from real life hardware-level constraints to higher level digital design. The architecture follows a Harvard Architecture Design, physically separating instruction memory from the datapath to streamline the fetch–decode–execute cycle.
+
+### Design Implementations
+Physical Prototype: A breadboard-based construction using discrete TTL/CMOS logic ICs. This version emphasizes real-world electrical considerations, signal integrity, and manual hardware debugging using testing equipment.
+
+RTL Design (Verilog): A synthesizable hardware description model. This version provides a digital environment for timing analysis via waveforms and gate-level logic synthesis.
 
 ## This Processor consists of 6 Major Subsystems
 
 Instruction Fetch Unit
 
-
 Instruction Register (IR)
 
-
 Datapath (Registers + ALU)
-
 
 System Bus
 
@@ -24,8 +27,12 @@ The system is clocked synchronously with an NE555P Chip (555 Timer), with regist
 ## Instruction Memory and Fetch Unit
 The instruction side of the CPU uses a 74HC161 4-bit Program Counter (PC), allowing for up to 16 instruction addresses.
 The PC outputs a 4-bit address.
-<img width="804" height="734" alt="Screenshot 2026-04-21 212711" src="https://github.com/user-attachments/assets/8381bc01-df4e-4d9e-9c7c-0e2d0ab9b9d5" />
 
+Discrete Implementation
+<img width="506" height="400" alt="Screenshot 2026-04-21 212711" src="https://github.com/user-attachments/assets/8381bc01-df4e-4d9e-9c7c-0e2d0ab9b9d5" />
+
+RTL Implementation
+<img width="506" height="400" alt="Screenshot 2026-05-01 231458" src="https://github.com/user-attachments/assets/5615415e-66cf-4fcc-998f-dc4a9cd932d8" />
 
 This address feeds directly into an EEPROM, which serves as instruction memory.
 
@@ -36,7 +43,12 @@ The EEPROM outputs an 8-bit instruction word for each PC address.
 Because instruction memory is physically separate from the datapath and data bus, this design qualifies as a Harvard architecture.
 
 ## Instruction Register (IR)
-<img width="506" height="577" alt="Screenshot 2026-04-21 212916" src="https://github.com/user-attachments/assets/d5da924e-dd10-49ad-832e-82cf1495b2e0" />
+Discrete Implementation
+<img width="406" height="400" alt="Screenshot 2026-04-21 212916" src="https://github.com/user-attachments/assets/d5da924e-dd10-49ad-832e-82cf1495b2e0" />
+
+RTL Implementation
+<img width="406" height="650" alt="Screenshot 2026-05-01 224308" src="https://github.com/user-attachments/assets/21b655ef-dab0-46e4-ad82-9761846e37e6" />
+
 
 The 8-bit instruction fetched from EEPROM is latched into the Instruction Register (IR). For this IR, we used two consecutive 74HC173 4-bit registers, allowing for 8 bit latches.
 The IR stores the current instruction for the duration of execution.
@@ -63,26 +75,8 @@ When disabled, the operand is electrically isolated to prevent bus contention.
 This design allows immediate values to be injected into the datapath without additional memory access or registers, simplifying the overall control logic.
 # Datapath Overview
 The datapath is 4 bits wide and consists of:
-### A Register – implemented using a 74HC173
-<img width="646" height="496" alt="Screenshot 2026-04-21 212059" src="https://github.com/user-attachments/assets/0813f3ff-6300-46ef-85f0-fc0d9de18d91" />
+### General Registers – implemented using a 74HC173 Chips
 
-
-
-### B Register – implemented using a 74HC173
-<img width="665" height="570" alt="Screenshot 2026-04-21 212028" src="https://github.com/user-attachments/assets/c75f0dc2-aa41-4542-951d-5c23057db77b" />
-
-
-### ALU – implemented using a 74LS181
-
-<img width="694" height="674" alt="Screenshot 2026-04-21 212155" src="https://github.com/user-attachments/assets/1c4b3939-a39b-4a17-9c9a-81f06e82dc79" />
-
-### Output Register – implemented using a separate 74HC173
-* Image Uses 74LS48 Chip, but a AT28C256 EEPROM can also be used as the decoder
-![Uploading Screenshot 2026-04-21 212711.png…]()
-<img width="683" height="445" alt="Screenshot 2026-04-21 212220" src="https://github.com/user-attachments/assets/4878de9f-aebd-461d-8b4c-cef146eada74" />
-
-
-### Registers
 The A and B registers store operands for ALU operations.
 
 
@@ -91,8 +85,18 @@ Each register can load data from the system bus under control of dedicated enabl
 
 Register outputs feed directly into the ALU inputs.
 
+Discrete Implementation
+<img width="332" height="280" alt="Screenshot 2026-04-21 212059" src="https://github.com/user-attachments/assets/0813f3ff-6300-46ef-85f0-fc0d9de18d91" />
+<img width="332" height="280" alt="Screenshot 2026-04-21 212028" src="https://github.com/user-attachments/assets/c75f0dc2-aa41-4542-951d-5c23057db77b" />
 
-### ALU
+RTL Implementation
+<img width="322" height="360" alt="Screenshot 2026-05-01 224441" src="https://github.com/user-attachments/assets/4ce910b7-2bc3-42dd-99a5-41ab147192dd" />
+<img width="322" height="360" alt="Screenshot 2026-05-01 224450" src="https://github.com/user-attachments/assets/f60c59a0-890b-413f-be60-38ef8dca94a0" />
+
+
+
+### ALU – implemented using a 74LS181
+
 The 74LS181 performs arithmetic and logic operations on the contents of the A and B registers.
 
 
@@ -100,7 +104,15 @@ ALU function selection is controlled by opcode-derived control signals.
 
 
 The ALU output is routed back onto the system bus or into the output register, depending on the instruction.
-Output Register
+
+Discrete Implementation
+<img width="350" height="320" alt="Screenshot 2026-04-21 212155" src="https://github.com/user-attachments/assets/1c4b3939-a39b-4a17-9c9a-81f06e82dc79" />
+
+RTL Implementation
+<img width="350" height="400" alt="Screenshot 2026-05-01 024627" src="https://github.com/user-attachments/assets/caf49c96-e23e-4e65-903f-32c05aca2ce4" />
+
+
+### Output Register – implemented using a separate 74HC173
 
 Implemented using a 74HC173
 
@@ -109,6 +121,14 @@ Loads data from the system bus
 
 
 Holds output values stable across clock cycles
+
+* Image Uses 74LS48 Chip, but a AT28C256 EEPROM can also be used as the decoder
+
+Discrete Implementation
+<img width="683" height="445" alt="Screenshot 2026-04-21 212220" src="https://github.com/user-attachments/assets/4878de9f-aebd-461d-8b4c-cef146eada74" />
+
+RTL Implementation
+<img width="401" height="727" alt="Screenshot 2026-05-01 224502" src="https://github.com/user-attachments/assets/e50f283c-15df-4f35-9153-d6be0f4eda9e" />
 
 
 This register is primarily used for demonstration purposes, allowing instruction results to be easily monitored.
@@ -133,8 +153,14 @@ The design prioritizes simplicity and clarity over performance or extensibility.
 There is also a 4 bit DIP switch used to load immediate values by the users choice for demo testing.
 
 ## Fetch-Decode-Execute / Control Unit
-The brain of the CPU is a microcoded control unit.
+
+Discrete Implementation
 <img width="827" height="586" alt="Screenshot 2026-04-21 213029" src="https://github.com/user-attachments/assets/bbf1607a-e4a2-46ae-82d4-3d1ef1d6e7fb" />
+
+RTL Implementation
+<img width="402" height="720" alt="Screenshot 2026-05-01 224308" src="https://github.com/user-attachments/assets/758b6763-60e1-4911-8716-612b59221ea8" />
+
+The brain of the CPU is a microcoded control unit.
 
 Fetch: The Program Counter (PC) outputs the address to the Instruction Memory (EEPROM), and the resulting 8-bit word is latched into the Instruction Register (IR).
 
@@ -157,15 +183,14 @@ The output register captures results from the datapath for observation or extern
 
 
 ## Instruction Set Architecture
-### Name |     Opcode | Operand  
-### LOADA     |  0001 |  xxxx
-### LOADB DIP | 0010  |  0000
-### ALU SUB  |  0011  |  0000
-### Z Jump   |  0100  |  xxxx
-### Halt     |   0101 |  0000
-### ALU ADD  |  0110  |  0000
-### OUT ALU  |  0111  |  0000
-### C Jump   |  1000  |  xxxx
+### Name      | Opcode| Operand  
+### LOADA DIP |  0001 |  0000
+### LOADB IMM |  0010 |  xxxx
+### OUT ALU   |  0011 |  0000
+### ALU SUB   |  0100 |  0000
+### NOT C JUMP|  0101 |  xxxx
+### NOT Z JUMP|  0110 |  xxxx
+### HALT      |  0111 |  0000
 
 
 
