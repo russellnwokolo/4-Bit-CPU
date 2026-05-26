@@ -55,7 +55,6 @@ Operand (4 bits): Provides immediate data to drive bus or jump the PC
 This separation allows the control logic to decode the opcode independently while the operand is routed into the datapath.
 Operand Handling and Bus Interface
 The operand field of the instruction register is connected to the system bus through a tri-state buffer.
-When enabled, the operand can directly drive the 4-bit system bus.
 
 
 When disabled, the operand is electrically isolated to prevent bus contention.
