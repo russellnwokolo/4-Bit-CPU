@@ -28,12 +28,6 @@ The system is clocked synchronously with an NE555P Chip (555 Timer), with regist
 The instruction side of the CPU uses a 74HC161 4-bit Program Counter (PC), allowing for up to 16 instruction addresses.
 The PC outputs a 4-bit address.
 
-Discrete Implementation
-<img width="506" height="400" alt="Screenshot 2026-04-21 212711" src="https://github.com/user-attachments/assets/8381bc01-df4e-4d9e-9c7c-0e2d0ab9b9d5" />
-
-RTL Implementation
-<img width="506" height="400" alt="Screenshot 2026-05-01 231458" src="https://github.com/user-attachments/assets/5615415e-66cf-4fcc-998f-dc4a9cd932d8" />
-
 This address feeds directly into an EEPROM, which serves as instruction memory.
 
 
@@ -43,11 +37,6 @@ The EEPROM outputs an 8-bit instruction word for each PC address.
 Because instruction memory is physically separate from the datapath and data bus, this design qualifies as a Harvard architecture.
 
 ## Instruction Register (IR)
-Discrete Implementation
-<img width="406" height="400" alt="Screenshot 2026-04-21 212916" src="https://github.com/user-attachments/assets/d5da924e-dd10-49ad-832e-82cf1495b2e0" />
-
-RTL Implementation
-<img width="406" height="650" alt="Screenshot 2026-05-01 224308" src="https://github.com/user-attachments/assets/21b655ef-dab0-46e4-ad82-9761846e37e6" />
 
 
 The 8-bit instruction fetched from EEPROM is latched into the Instruction Register (IR). For this IR, we used two consecutive 74HC173 4-bit registers, allowing for 8 bit latches.
@@ -86,14 +75,6 @@ Each register can load data from the system bus under control of dedicated enabl
 Register outputs feed directly into the ALU inputs.
 
 Discrete Implementation
-<img width="332" height="280" alt="Screenshot 2026-04-21 212059" src="https://github.com/user-attachments/assets/0813f3ff-6300-46ef-85f0-fc0d9de18d91" />
-<img width="332" height="280" alt="Screenshot 2026-04-21 212028" src="https://github.com/user-attachments/assets/c75f0dc2-aa41-4542-951d-5c23057db77b" />
-
-RTL Implementation
-<img width="322" height="360" alt="Screenshot 2026-05-01 224441" src="https://github.com/user-attachments/assets/4ce910b7-2bc3-42dd-99a5-41ab147192dd" />
-<img width="322" height="360" alt="Screenshot 2026-05-01 224450" src="https://github.com/user-attachments/assets/f60c59a0-890b-413f-be60-38ef8dca94a0" />
-
-
 
 ### ALU – implemented using a 74LS181
 
@@ -105,11 +86,6 @@ ALU function selection is controlled by opcode-derived control signals.
 
 The ALU output is routed back onto the system bus or into the output register, depending on the instruction.
 
-Discrete Implementation
-<img width="350" height="320" alt="Screenshot 2026-04-21 212155" src="https://github.com/user-attachments/assets/1c4b3939-a39b-4a17-9c9a-81f06e82dc79" />
-
-RTL Implementation
-<img width="350" height="400" alt="Screenshot 2026-05-01 024627" src="https://github.com/user-attachments/assets/caf49c96-e23e-4e65-903f-32c05aca2ce4" />
 
 
 ### Output Register – implemented using a separate 74HC173
@@ -123,13 +99,6 @@ Loads data from the system bus
 Holds output values stable across clock cycles
 
 * Image Uses 74LS48 Chip, but a AT28C256 EEPROM can also be used as the decoder
-
-Discrete Implementation
-<img width="683" height="445" alt="Screenshot 2026-04-21 212220" src="https://github.com/user-attachments/assets/4878de9f-aebd-461d-8b4c-cef146eada74" />
-
-RTL Implementation
-<img width="401" height="727" alt="Screenshot 2026-05-01 224502" src="https://github.com/user-attachments/assets/e50f283c-15df-4f35-9153-d6be0f4eda9e" />
-
 
 This register is primarily used for demonstration purposes, allowing instruction results to be easily monitored.
 ## Design Characteristics and Constraints
@@ -153,12 +122,6 @@ The design prioritizes simplicity and clarity over performance or extensibility.
 There is also a 4 bit DIP switch used to load immediate values by the users choice for demo testing.
 
 ## Fetch-Decode-Execute / Control Unit
-
-Discrete Implementation
-<img width="827" height="586" alt="Screenshot 2026-04-21 213029" src="https://github.com/user-attachments/assets/bbf1607a-e4a2-46ae-82d4-3d1ef1d6e7fb" />
-
-RTL Implementation
-<img width="402" height="720" alt="Screenshot 2026-05-01 224308" src="https://github.com/user-attachments/assets/758b6763-60e1-4911-8716-612b59221ea8" />
 
 The brain of the CPU is a microcoded control unit.
 
@@ -192,17 +155,5 @@ The output register captures results from the datapath for observation or extern
 ### NOT Z JUMP|  0110 |  xxxx
 ### HALT      |  0111 |  0000
 
-
-
-## Physical Prototype Limitations 
-
-1. Signal Integrity & Crosstalk
-With  hundreds of jumper wires and the implementation being on a breadboard, the circuit will have parasitic capacitance and parasitic inductance. High-speed clock transitions create EMI across adjacent rows, occasionally causing control lines (like Register Enable) to trigger prematurely. This explains unplanned LED behavior during operations. 
-
-2. Voltage Drop & Power Distribution
-The cumulative resistance of the breadboard power rails resulted in a non-linear voltage gradient. Despite a stable 5V input, peripheral modules experienced voltage sag, dropping logic levels below the Vi_H (Input High) threshold for certain CMOS chips, leading to undefined logic states.
-
-3. Conclusion of Project
-This project was a multi-month deep dive into low-level hardware abstraction. Having successfully implemented the datapath, ALU, and fetch-cycle logic, the project was overall a great learning experience. The challenges faced in the bring-up phase provided me with practical experience in hardware debugging and the necessity of PCB ground planes for complex synchronous logic.
 
 
