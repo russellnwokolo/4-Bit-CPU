@@ -12,4 +12,4 @@ This project was a multi-month deep dive into low-level hardware abstraction. Ha
 
 #### This Demo Vid shows the physical breadboard implementation of the CPU
 
-## LINK: https://youtu.be/TgJ3NvlFTbY
+## Unlisted Video: https://youtu.be/TgJ3NvlFTbY
